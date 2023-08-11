@@ -54,7 +54,7 @@ To get a "Release" build, do the simple steps:
 
 Project has been build and tested on the next OS:
 
-- Window 7 (64-bit):
+- Windows 7 (64-bit):
   - IDE - Visual Studio 2017 with supporting of CMake-based projects feature
         (https://blogs.msdn.microsoft.com/vcblog/2016/11/16/cmake-support-in-visual-studio-the-visual-studio-2017-rc-update/)
 
