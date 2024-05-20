@@ -2,16 +2,27 @@
  * PriorityQueue
  */
 
+// module Server_Module;
+
 #include <thread>
 #include <iostream>
 #include <chrono>
 #include <string>
 #include <sstream>   
 #include <random>
-#include <experimental/filesystem>
+#include <filesystem>
 #include "Server.h"
+#include <ctime>
+#include <string_view>
 
-namespace fsys = std::experimental::filesystem;
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/daily_file_sink.h"
+#include "spdlog/sinks/null_sink.h"
+#include "spdlog/sinks/rotating_file_sink.h"
+
+
+namespace fsys = std::filesystem;
 
 extern bool gl_getCancelStatus();
 extern long long getTicksSinceAppStart();
@@ -65,18 +76,12 @@ void Server::initLog()
     // there's used third-party code "spdlog" for logging (see: https://github.com/gabime/spdlog)
     // init logger
 
+    using namespace std::literals;
+
     spdlog::set_pattern("[%H:%M:%S] %v");
-
-    std::time_t currTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::string strFileNameSfx(std::ctime(&currTime));
-
-    using namespace std;
-
-    const std::string strSubFolderName("logs");
-    std::string logFileName("msg_log");  
-    std::stringstream strstr;
-    logFileName += strstr.str();
-    logFileName += ".log";
+   
+    constexpr const auto strSubFolderName("logs"sv);
+    constexpr const auto logFileName("msg_log.log"sv);  
 
     if (!fsys::exists(strSubFolderName))
             fsys::create_directory(strSubFolderName);
@@ -89,7 +94,10 @@ void Server::initLog()
     spLogger_ = spdlog::daily_logger_st("server_logger", strRelativeName);
     spLogger_.get()->name();
 
-    strLogFileName_ = spdlog::sinks::default_daily_file_name_calculator::calc_filename(strRelativeName);
+    const std::time_t curr_t = std::time(0);
+    const std::tm* curr_tm = std::localtime(&curr_t);
+
+    strLogFileName_ = spdlog::sinks::daily_filename_calculator::calc_filename(strRelativeName, *curr_tm);
 }
 
 void Server::loop(Channel* pChannel)

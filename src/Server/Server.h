@@ -6,12 +6,16 @@
 #define PRIORITYQUEUE_SERVER_H
 
 #include <Channel/Channel.h>
-#include "spdlog/spdlog.h"
 #include <memory>
 
  /**
  * Server class declaration
  */
+
+namespace spdlog
+{
+ class logger;
+};
 
 class Server : public MsgObserver
 {

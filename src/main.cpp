@@ -128,7 +128,7 @@ bool processArguments(int argc, char* argv[], size_t& c_clients, size_t& c_msgs)
 			std::cout << strHelp;
 		}
 	}
-	catch (const cxxopts::OptionException& e)
+	catch (const cxxopts::exceptions::exception& e)
 	{
 		std::cout << "command line parsing error: " << e.what() << std::endl;
 		bResult = false;
