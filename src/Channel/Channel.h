@@ -30,7 +30,7 @@ struct Channel
 
 class ChannelFactory
 {
-    static std::atomic<Channel*> priorityQueueInstance_;
+    inline static std::atomic<Channel*> priorityQueueInstance_ = nullptr;
 
   public:
     static Channel* getPriorityQueueInstance();

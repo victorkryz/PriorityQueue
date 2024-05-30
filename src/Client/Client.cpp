@@ -16,11 +16,6 @@ extern long long getTicksSinceAppStart();
 * Client class implementation
 */
 
-std::mt19937 Client::rnGen_(time(nullptr));
-std::uniform_int_distribution<unsigned short> Client::uid_(0,255);
-std::mutex Client::mtx_;
-
-
 void Client::run(Client* pClient, Channel* pChannel, size_t msgCount)
 {
     using namespace std::chrono_literals;

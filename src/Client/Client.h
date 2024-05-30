@@ -8,6 +8,8 @@
 #include <random>
 #include <msg.h>
 #include <mutex>
+#include <shared_mutex>
+#include <chrono>
 #include <Channel/Channel.h>
 
 
@@ -39,5 +41,8 @@ class Client {
     static std::mutex mtx_;
 };
 
+inline std::uniform_int_distribution<unsigned short> Client::uid_(0,255);
+inline std::mutex Client::mtx_;
+inline std::mt19937 Client::rnGen_(time(nullptr));
 
 #endif //PRIORITYQUEUE_CLIENT_H

@@ -8,8 +8,6 @@
  *  ChannelImpl class implementation
  */
 
-std::atomic<Channel*> ChannelFactory::priorityQueueInstance_(nullptr);
-
 Channel* ChannelFactory::getPriorityQueueInstance()
 {
     if ( nullptr == priorityQueueInstance_)

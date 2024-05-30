@@ -21,7 +21,7 @@ class ChannelImpl : public Channel {
                             { return left.getContent().cPriority >
                                       right.getContent().cPriority; }) {
      }
-     virtual ~ChannelImpl() = default;
+     ~ChannelImpl() override = default;
 
      void pushMsg(const Msg& msg) override;
      bool popMsg(MsgObserver* observ) override;

@@ -124,8 +124,7 @@ bool processArguments(int argc, char* argv[], size_t& c_clients, size_t& c_msgs)
 		if (!bResult )
 		{
 			// show usage:
-			std::string strHelp = options.help();
-			std::cout << strHelp;
+			showUsage(options);
 		}
 	}
 	catch (const cxxopts::exceptions::exception& e)
