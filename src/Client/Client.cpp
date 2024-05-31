@@ -7,10 +7,7 @@
 #include <chrono>
 #include <thread>
 #include "Client.h"
-
-
-extern bool gl_getCancelStatus();
-extern long long getTicksSinceAppStart();
+#include "Utils/apptm.h"
 
 /**
 * Client class implementation
@@ -43,7 +40,7 @@ Msg Client::generateMsg()
 
     tagTDATA* pData = new tagTDATA;
     pData->dwClientId = id_;
-    pData->dwTicks = static_cast<DWORD>(ticks);
+    pData->dwTicks = ticks;
 
 	// form some data:
     memset(pData->Data, 0, sizeof(pData->Data));
@@ -53,7 +50,7 @@ Msg Client::generateMsg()
 
     {
       std::lock_guard<std::mutex> guard(mtx_);
-      pData->cPriority = static_cast<unsigned short>(uid_(rnGen_));
+      pData->cPriority = uid_(rnGen_);
     }
 
     return (Msg(pData));

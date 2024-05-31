@@ -21,11 +21,10 @@
 #include "spdlog/sinks/null_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 
+#include "Utils/apptm.h"
+
 
 namespace fsys = std::filesystem;
-
-extern bool gl_getCancelStatus();
-extern long long getTicksSinceAppStart();
 
 /**
 * Server class implementation
@@ -67,8 +66,10 @@ void Server::run(Server* pServer, Channel* pChannel)
 Server::Server(){
 }
 
-Server::~Server() {
-	spLogger_->flush();
+Server::~Server() 
+{
+    if (spLogger_)
+	   spLogger_->flush();
 }
 
 void Server::initLog()
@@ -128,10 +129,13 @@ void Server::onIdle()
 
 void Server::logMsg(const Msg& msg)
 {
-    // for time of logging used ticks since app started:
-    const auto ticks = getTicksSinceAppStart();
+    if (spLogger_)
+    {
+        // for time of logging used ticks since app started:
+        const auto ticks = getTicksSinceAppStart();
 
-    const TDATA& content = msg.getContent();
-    spLogger_->info("client id: {}, priority: {}, msg creation time: {}, msg logging time: {}",
-                    content.dwClientId, content.cPriority, content.dwTicks, (DWORD)ticks);
+        const TDATA& content = msg.getContent();
+        spLogger_->info("client id: {}, priority: {}, msg creation time: {}, msg logging time: {}",
+                        content.dwClientId, content.cPriority, content.dwTicks, ticks);
+    }
 }

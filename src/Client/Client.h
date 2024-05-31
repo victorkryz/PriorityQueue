@@ -6,11 +6,11 @@
 #define PRIORITYQUEUE_CLIENT_H
 
 #include <random>
-#include <msg.h>
 #include <mutex>
 #include <shared_mutex>
 #include <chrono>
-#include <Channel/Channel.h>
+#include "Base/msg.h"
+#include "Channel/Channel.h"
 
 
  /**
@@ -22,7 +22,7 @@ class Client {
   public:
     static void run(Client* pClient, Channel* pChannel, size_t msgCount);
 
-    Client(DWORD id) : id_(id){
+    Client(uint64_t id) : id_(id){
     }
 
 	virtual ~Client() = default;
@@ -34,7 +34,7 @@ class Client {
     Msg generateMsg();
 
    private:
-    DWORD id_;
+    uint64_t id_ = 0;
 
     static std::mt19937 rnGen_;
     static std::uniform_int_distribution<unsigned short> uid_;

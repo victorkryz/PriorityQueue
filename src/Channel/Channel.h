@@ -7,7 +7,7 @@
 #define PRIORITYQUEUE_CHANNEL_H
 
 #include <atomic>
-#include <msg.h>
+#include "Base/msg.h"
 
  /**
  * Channel interface declaration

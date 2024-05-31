@@ -16,6 +16,8 @@ namespace Breaking
         status_ = status;
     }
 
+   
+
 #ifdef _WIN32
 
     #include <windows.h>
@@ -58,6 +60,11 @@ namespace Breaking
 #endif // _WIN32
 
 } //namespace Breaking
+
+// obtains a breaking status
+bool gl_getCancelStatus() {
+    return (Breaking::BreakingStatus::Pending == Breaking::getStatus());
+}
 
 
 

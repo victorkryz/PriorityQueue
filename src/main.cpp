@@ -9,18 +9,16 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
-#include <Channel/Channel.h>
-#include <Server/Server.h>
-#include <Client/Client.h>
-#include "BreackingHandler.h"
-#include "cxxopts.hpp"
+#include "Channel/Channel.h"
+#include "Server/Server.h"
+#include "Client/Client.h"
+#include "Utils/BreackingHandler.h"
+#include "Utils/apptm.h"
+#include "Utils/cxxopts.hpp"
 
 
 // default limit of issued messages per client
 const size_t gl_msgNumberLimit = 1000;
-
-// time of app start
-auto gl_appStartTimePoint = std::chrono::system_clock::now();
 
 // some functions declaration
 bool processArguments(int argc, char* argv[], size_t& c_clients, size_t& c_msgs);
@@ -28,8 +26,6 @@ void showUsage(const cxxopts::Options& options);
 std::thread startServer(Server* pServer, Channel* pChannel);
 void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t msgLimit, 
 				  std::vector<std::shared_ptr<Client>>& clients, std::vector<std::thread>& clientThreads);
-bool gl_getCancelStatus();
-
 
 /**
 * main procedure
@@ -52,8 +48,7 @@ int main(int argc, char* argv[])
     Breaking::reactivateHandler();
 
 	// obtain "channel":
-    std::unique_ptr<Channel> spChannel;
-    spChannel.reset(ChannelFactory::getPriorityQueueInstance());
+    std::unique_ptr<Channel> spChannel(ChannelFactory::getPriorityQueueInstance());
 
 	// start server:
 	Server* pServer = Server::getInstance();
@@ -102,7 +97,6 @@ bool processArguments(int argc, char* argv[], size_t& c_clients, size_t& c_msgs)
 		cxxopts::Options options("PriorityQueue", "Modelling of client/server communications based on priority queue.");
 		options.positional_help("[optional args]")
 			.show_positional_help();
-
 
 		options.add_options()
 			("c, clients", "clients number (not above than 10)", cxxopts::value<size_t>(c_clients))
@@ -157,10 +151,9 @@ std::thread startServer(Server* pServer, Channel* pChannel)
 void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t msgLimit, 
 				  std::vector<std::shared_ptr<Client>>& clients, std::vector<std::thread>& clientThreads)
 {
-	for (size_t i = 0; i < c_clients; i++)
+	for (int i = 0; i < c_clients; i++)
 	{
-		std::shared_ptr<Client> spClient;
-		spClient.reset(new Client(i + 1));
+		std::shared_ptr<Client> spClient = std::make_shared<Client>(i + 1);
 
 		clientThreads.push_back(std::thread([&spClient, &spChannel, msgLimit]() {
 								Client::run(spClient.get(), spChannel.get(), msgLimit); }));
@@ -168,17 +161,5 @@ void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t 
 	}
 }
 
-// returns ticks since app started
-long long getTicksSinceAppStart()
-{
-	using namespace std;
 
-	const auto currTicksSinceAppStart =
-		chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - gl_appStartTimePoint);
-	return currTicksSinceAppStart.count();
-}
 
-// obtains a breaking status
-bool gl_getCancelStatus() {
-    return (Breaking::BreakingStatus::Pending == Breaking::getStatus());
-}

@@ -28,9 +28,11 @@ class Server : public MsgObserver
 	static void releaseInstance();
 	static void run(Server* pServer, Channel* pChannel);
 
-    Server();
-    virtual ~Server();
+  protected:	
+	Server();
+    ~Server() override;
 
+  public:
 	long getReceivedMsgCount() {
 		return msgCount_;
 	}
@@ -52,9 +54,10 @@ class Server : public MsgObserver
 
     virtual void onIdle();
 
-  private:
-	 void initLog();
+  protected:
+	void initLog();
 
+  private:		
 	std::shared_ptr<spdlog::logger> spLogger_;
 	bool bShutDownPending_ = false;
 	long msgCount_ = 0;

@@ -1,7 +1,5 @@
 //
-// Created by Victor on 12/5/2017.
 //
-
 #ifndef PRIORITYQUEUE_MSG_H
 #define PRIORITYQUEUE_MSG_H
 
@@ -12,17 +10,14 @@
 #endif
 
 #include <memory>
+#include <bitset>
 
-#ifndef _WIN32
-	using DWORD = unsigned int;
-	using BYTE = unsigned char;
-#endif
 
 typedef struct tagTDATA {
-    BYTE cPriority; //приоритет запроса 0 – 255 (0 – наивысший приоритет)
-    DWORD dwTicks; //время формирования запроса в системных тиках
-    DWORD dwClientId; //уникальный идентификатор клиента
-    char Data[255]; //абстрактные данные
+    uint8_t  cPriority;  // packet priority 0 – 255 (0 – higer)
+    int64_t  dwTicks;    // packet generation time
+    uint64_t dwClientId; // client identifier
+    char     Data[255];  // packet's data
 } TDATA, *PTDATA;
 
 
@@ -34,8 +29,7 @@ class Msg
     }
 
     Msg(Msg&& msg) {
-        content_ = msg.content_;
-        msg.content_.reset();
+        content_ = std::move(msg.content_);
     }
 
     Msg(const Msg& src){
@@ -53,6 +47,15 @@ class Msg
         return *this;
     }
 
+    Msg& operator=(Msg&& src)
+    {
+        if ( this != &src ) {
+            content_ = std::move(src.content_);
+        }
+           
+        return *this;
+    }
+
     const TDATA& getContent() const {
         return *content_;
     }
@@ -62,12 +65,10 @@ class Msg
     {
         if (nullptr != srcMsg.content_ )
         {
-            // content_ = std::make_shared<TDATA>(new TDATA());
             content_.reset(new TDATA());
 
-            const auto &src = *srcMsg.content_;
+            const auto& src = *srcMsg.content_;
             auto& dest = *content_;
-
             dest.dwClientId = src.dwClientId;
             dest.dwTicks = src.dwTicks;
             dest.cPriority = src.cPriority;
@@ -76,7 +77,7 @@ class Msg
     }
 
    private:
-    std::shared_ptr<TDATA> content_;
+    std::unique_ptr<TDATA> content_;
 };
 
 #endif //PRIORITYQUEUE_MSG_H
