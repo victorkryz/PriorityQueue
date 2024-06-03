@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.7)
 project(PriorityQueue)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CURRENT_DIR  "${CMAKE_CURRENT_SOURCE_DIR}")
 set(SOURCE_FILES_DIR "${CURRENT_DIR}/src")
@@ -20,8 +20,6 @@ if(UNIX)
 else()
 	set(EXTRA_LIBS "")
 endif()
-
-add_compile_options(-fmodules-ts)
 
 set(CLIENT_SERVER_LIB ClientServerImpl)
 

@@ -18,9 +18,10 @@ void Client::run(std::shared_ptr<Client>& spClient, std::unique_ptr<Channel>& sp
 {
     using namespace std::chrono_literals;
 
-    // std::lock_guard tg(mtx2_);
-
-    std::cout << "Client " << spClient->id_<< " " << spClient->id_2  << " started ..." << std::endl;
+    {
+      std::lock_guard<std::mutex> guard(mtx_);
+      std::cout << "Client " << spClient->id_ << " started ->" << std::endl;
+    }
 
     if ( (nullptr != spClient) &&
             (nullptr != spChannel))
@@ -31,7 +32,10 @@ void Client::run(std::shared_ptr<Client>& spClient, std::unique_ptr<Channel>& sp
             }
     }
 
-     std::cout << "Client " << spClient->id_ << " finished" << std::endl;
+    {
+      std::lock_guard<std::mutex> guard(mtx_);
+      std::cout << "Client " << spClient->id_ << " finished <-" << std::endl;
+    }
 }
 
 void Client::doAction(Channel& channel)

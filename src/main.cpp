@@ -23,7 +23,7 @@ const size_t gl_msgNumberLimit = 1000;
 // some functions declaration
 bool processArguments(int argc, char* argv[], size_t& c_clients, size_t& c_msgs);
 void showUsage(const cxxopts::Options& options);
-std::thread startServer(Server* pServer, Channel* pChannel);
+std::thread startServer(Server* pServer, std::unique_ptr<Channel>& spChannel);
 void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t msgLimit, 
 				  std::vector<std::shared_ptr<Client>>& clients, std::vector<std::thread>& clientThreads);
 
@@ -54,24 +54,16 @@ int main(int argc, char* argv[])
 
 	// start server:
 	Server* pServer = Server::getInstance();
-    std::thread srvTh = startServer(pServer, spChannel.get());
+    std::thread srvTh = startServer(pServer, spChannel);
 
 	// start clients:
     std::vector<std::thread> clientThreads;
     std::vector<std::shared_ptr<Client>> clients;
 	startClients(spChannel, arg_c_clients, arg_c_msgs, clients, clientThreads);
-	// std::this_thread::sleep_for(1s);
-	
-
-    // give some time to clint's threads get activated
-    
-    // std::this_thread::sleep_for(3s);
 
     // wait while clients are active:
     for ( auto& th: clientThreads)
          th.join();
-
-	// std::this_thread::sleep_for(10s);	 
 
     // all clients have gone ...
     // notify server it's time to shutdown
@@ -83,7 +75,15 @@ int main(int argc, char* argv[])
     clientThreads.clear();
     clients.clear();
 
-    std::cout << "Done! (" << pServer->getReceivedMsgCount()  << " messages were received)" << std::endl;
+	int exitCode(0);
+	std::string strDone("Done");
+	if ( Breaking::BreakingStatus::Pending  == Breaking::getStatus() )
+	{
+		strDone = "Aborted";
+		exitCode = 1;
+	}
+
+    std::cout << strDone << "! (" << pServer->getReceivedMsgCount()  << " messages were received)" << std::endl;
     std::cout << "See log file: \"" << pServer->getLogFileName() << "\"" << std::endl;
 
     Server::releaseInstance();
@@ -145,15 +145,12 @@ void showUsage(const cxxopts::Options& options)
 
 
 // launches the server on specified channel
-std::thread startServer(Server* pServer, Channel* pChannel)
+std::thread startServer(Server* pServer, std::unique_ptr<Channel>& spChannel)
 {
-    std::thread th([pServer, pChannel]() {
-                Server::run(pServer, pChannel); });
+    std::thread th([pServer, &spChannel]() {
+                Server::run(pServer, spChannel); });
     return th;
 }
-
-std::vector<std::thread> thxs;
-// std::vector<std::shared_ptr<Client>> gl_clients;
 
 // launches a set of clients on specified channel
 void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t msgLimit, 
@@ -163,7 +160,6 @@ void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t 
 	
 	clients.resize(c_clients);
 	clientThreads.reserve(c_clients);
-	// gl_clients.resize(c_clients);
 
 	for (int i = 0; i < c_clients; i++)
 	{
@@ -174,33 +170,7 @@ void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t 
 								Client::run(spClient, spChannel, msgLimit);}); 
 		
 		clientThreads.emplace_back(std::move(th));
-
-		std::cout << "Client " << spClient->getId() << " started ..." << std::endl;
-
-		// std::this_thread::sleep_for(1ms);
-
-		// std::this_thread::sleep_for(100ms);								
-
-		// gl_clients.push_back(spClient);
-		// gl_clients[i] = spClient;
-		// thxs.emplace_back(std::move(th));
-
-		// std::this_thread::sleep_for(10ms);								
-
-		
-		// std::this_thread::sleep_for(1ms);
-
-
-		// clientThreads.push_back(std::thread([&spClient, &spChannel, msgLimit]() {
-								// Client::run(spClient.get(), spChannel.get(), msgLimit); }));
-
-
-		// clientThreads.push_back(std::thread([&spClient, &spChannel, msgLimit]() {
-								// Client::run(spClient.get(), spChannel.get(), msgLimit); }));
-		// clients.push_back(spClient);
 	}
-
-	// std::this_thread::sleep_for(100ms);
 }
 
 

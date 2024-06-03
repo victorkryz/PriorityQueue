@@ -56,11 +56,11 @@ void Server::releaseInstance() {
     }
 }
 
-void Server::run(Server* pServer, Channel* pChannel) 
+void Server::run(Server* pServer, std::unique_ptr<Channel>& spChannel) 
 {
     if ( (nullptr != pServer) &&
-                    (nullptr != pChannel))
-            pServer->loop(pChannel);
+                    (spChannel))
+            pServer->loop(spChannel);
 }
 
 Server::Server(){
@@ -98,7 +98,7 @@ void Server::initLog()
     strLogFileName_ = spdlog::sinks::daily_filename_calculator::calc_filename(strRelativeName, *curr_tm);
 }
 
-void Server::loop(Channel* pChannel)
+void Server::loop(std::unique_ptr<Channel>& spChannel)
 {
     using namespace std::chrono_literals;
 
@@ -107,8 +107,8 @@ void Server::loop(Channel* pChannel)
             if (bShutDownPending_)
 				break;
 
-            if ( pChannel->waitForMsg(20ms) )
-                 pChannel->popMsg(this);
+            if ( spChannel->waitForMsg(20ms) )
+                 spChannel->popMsg(this);
             else
                 onIdle();    
     }

@@ -78,7 +78,7 @@ TEST_F(ServerTS, MsgFlowTest)
                 
     spChannel_->pushMsg(msg);
 
-    Server::run(server_, spChannel_.get());
+    Server::run(server_, spChannel_);
 
     EXPECT_EQ(server_->getReceivedMsgCount(), 1);
 }
