@@ -74,9 +74,6 @@ Server::~Server()
 
 void Server::initLog()
 {
-    // there's used third-party code "spdlog" for logging (see: https://github.com/gabime/spdlog)
-    // init logger
-
     using namespace std::literals;
 
     spdlog::set_pattern("[%H:%M:%S] %v");
@@ -103,15 +100,17 @@ void Server::initLog()
 
 void Server::loop(Channel* pChannel)
 {
+    using namespace std::chrono_literals;
+
     while(!gl_getCancelStatus())
     {
-		if (!pChannel->popMsg(this) )
-		{
-			onIdle();
-
-			if (bShutDownPending_)
+            if (bShutDownPending_)
 				break;
-		}
+
+            if ( pChannel->waitForMsg(20ms) )
+                 pChannel->popMsg(this);
+            else
+                onIdle();    
     }
 }
 
@@ -123,8 +122,6 @@ void Server::onMsg(const Msg& msg)
 
 void Server::onIdle()
 {
-    using namespace std::chrono_literals;
-    std::this_thread::sleep_for(100ms);
 }
 
 void Server::logMsg(const Msg& msg)

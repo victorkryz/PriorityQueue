@@ -36,6 +36,8 @@ void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t 
 */
 int main(int argc, char* argv[])
 {
+	using namespace std::chrono_literals;
+
     size_t arg_c_clients(0), arg_c_msgs(gl_msgNumberLimit);
     if (!processArguments(argc, argv, arg_c_clients, arg_c_msgs))
             return 1;
@@ -58,14 +60,18 @@ int main(int argc, char* argv[])
     std::vector<std::thread> clientThreads;
     std::vector<std::shared_ptr<Client>> clients;
 	startClients(spChannel, arg_c_clients, arg_c_msgs, clients, clientThreads);
+	// std::this_thread::sleep_for(1s);
+	
 
     // give some time to clint's threads get activated
-    using namespace std::chrono_literals;
-    std::this_thread::sleep_for(3s);
+    
+    // std::this_thread::sleep_for(3s);
 
     // wait while clients are active:
     for ( auto& th: clientThreads)
          th.join();
+
+	// std::this_thread::sleep_for(10s);	 
 
     // all clients have gone ...
     // notify server it's time to shutdown
@@ -146,19 +152,55 @@ std::thread startServer(Server* pServer, Channel* pChannel)
     return th;
 }
 
+std::vector<std::thread> thxs;
+// std::vector<std::shared_ptr<Client>> gl_clients;
 
 // launches a set of clients on specified channel
 void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t msgLimit, 
 				  std::vector<std::shared_ptr<Client>>& clients, std::vector<std::thread>& clientThreads)
 {
+	using namespace std::chrono_literals;
+	
+	clients.resize(c_clients);
+	clientThreads.reserve(c_clients);
+	// gl_clients.resize(c_clients);
+
 	for (int i = 0; i < c_clients; i++)
 	{
-		std::shared_ptr<Client> spClient = std::make_shared<Client>(i + 1);
+		std::shared_ptr<Client>& spClient = clients[i];
+		spClient.reset(new Client(i+1));
 
-		clientThreads.push_back(std::thread([&spClient, &spChannel, msgLimit]() {
-								Client::run(spClient.get(), spChannel.get(), msgLimit); }));
-		clients.push_back(spClient);
+		std::thread th([&spClient, &spChannel, msgLimit]() {
+								Client::run(spClient, spChannel, msgLimit);}); 
+		
+		clientThreads.emplace_back(std::move(th));
+
+		std::cout << "Client " << spClient->getId() << " started ..." << std::endl;
+
+		// std::this_thread::sleep_for(1ms);
+
+		// std::this_thread::sleep_for(100ms);								
+
+		// gl_clients.push_back(spClient);
+		// gl_clients[i] = spClient;
+		// thxs.emplace_back(std::move(th));
+
+		// std::this_thread::sleep_for(10ms);								
+
+		
+		// std::this_thread::sleep_for(1ms);
+
+
+		// clientThreads.push_back(std::thread([&spClient, &spChannel, msgLimit]() {
+								// Client::run(spClient.get(), spChannel.get(), msgLimit); }));
+
+
+		// clientThreads.push_back(std::thread([&spClient, &spChannel, msgLimit]() {
+								// Client::run(spClient.get(), spChannel.get(), msgLimit); }));
+		// clients.push_back(spClient);
 	}
+
+	// std::this_thread::sleep_for(100ms);
 }
 
 

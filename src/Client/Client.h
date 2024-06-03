@@ -20,29 +20,40 @@
 class Client {
 
   public:
-    static void run(Client* pClient, Channel* pChannel, size_t msgCount);
+    static void run(std::shared_ptr<Client>&  spClient, std::unique_ptr<Channel>& spChannel, size_t msgCount);
 
-    Client(uint64_t id) : id_(id){
+    Client(uint64_t id) : id_(id), id_2(id) {
+      std::cout << "constr new id: " << id_ << std::endl;
     }
 
-	virtual ~Client() = default;
+	virtual ~Client() {
+      std::cout << "destr id: " << id_ << std::endl;
+  }
 
-   protected:
+  uint64_t getId() const {
+    return id_;
+  }
+
+  protected:
      void doAction(Channel& channel);
 
    private:
     Msg generateMsg();
 
    private:
+    uint64_t teg_ = 25;
     uint64_t id_ = 0;
+    uint64_t id_2 = 0;
+
 
     static std::mt19937 rnGen_;
     static std::uniform_int_distribution<unsigned short> uid_;
-    static std::mutex mtx_;
+    static std::mutex mtx_, mtx2_;
 };
 
 inline std::uniform_int_distribution<unsigned short> Client::uid_(0,255);
 inline std::mutex Client::mtx_;
+inline std::mutex Client::mtx2_;
 inline std::mt19937 Client::rnGen_(time(nullptr));
 
 #endif //PRIORITYQUEUE_CLIENT_H

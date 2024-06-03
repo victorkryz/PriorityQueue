@@ -6,6 +6,7 @@
 #include <sstream>   
 #include <chrono>
 #include <thread>
+#include <iostream>
 #include "Client.h"
 #include "Utils/apptm.h"
 
@@ -13,19 +14,24 @@
 * Client class implementation
 */
 
-void Client::run(Client* pClient, Channel* pChannel, size_t msgCount)
+void Client::run(std::shared_ptr<Client>& spClient, std::unique_ptr<Channel>& spChannel, size_t msgCount)
 {
     using namespace std::chrono_literals;
 
-    if ( (nullptr != pClient) &&
-            (nullptr != pChannel))
+    // std::lock_guard tg(mtx2_);
+
+    std::cout << "Client " << spClient->id_<< " " << spClient->id_2  << " started ..." << std::endl;
+
+    if ( (nullptr != spClient) &&
+            (nullptr != spChannel))
     {
             while (!gl_getCancelStatus() &&
                           (msgCount-- != 0)) {
-                pClient->doAction(*pChannel);
-				std::this_thread::sleep_for(2ms);
+                spClient->doAction(*spChannel);
             }
     }
+
+     std::cout << "Client " << spClient->id_ << " finished" << std::endl;
 }
 
 void Client::doAction(Channel& channel)

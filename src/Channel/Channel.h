@@ -22,9 +22,11 @@ struct MsgObserver
 
 struct Channel
 {
-    virtual void pushMsg(const Msg& msg) = 0;
+    virtual void pushMsg(const Msg& msg) = 0; 
+    virtual void pushMsg(Msg&& msg) = 0;
     virtual bool popMsg(MsgObserver* observ) = 0;
     virtual bool isEmpty() = 0;
+    virtual bool waitForMsg(const std::chrono::duration<double, std::milli>& timeout) = 0;
     virtual ~Channel() = default;
 };
 
