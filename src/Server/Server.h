@@ -6,12 +6,18 @@
 #define PRIORITYQUEUE_SERVER_H
 
 #include <Channel/Channel.h>
-#include "spdlog/spdlog.h"
 #include <memory>
+#include <mutex>
+#include <thread>
 
  /**
  * Server class declaration
  */
+
+namespace spdlog
+{
+ class logger;
+};
 
 class Server : public MsgObserver
 {
@@ -22,11 +28,13 @@ class Server : public MsgObserver
   public:
     static Server* getInstance();
 	static void releaseInstance();
-	static void run(Server* pServer, Channel* pChannel);
+	static void run(Server* pServer, std::unique_ptr<Channel>& spChannel);
 
-    Server();
-    virtual ~Server();
+  protected:	
+	Server();
+    ~Server() override;
 
+  public:
 	long getReceivedMsgCount() {
 		return msgCount_;
 	}
@@ -42,15 +50,16 @@ class Server : public MsgObserver
 	}
 
   protected:
-    void loop(Channel* pChannel);
+    void loop(std::unique_ptr<Channel>& spChannel);
     void logMsg(const Msg& msg);
 	void onMsg(const Msg& msg) override;
 
     virtual void onIdle();
 
-  private:
-	 void initLog();
+  protected:
+	void initLog();
 
+  private:		
 	std::shared_ptr<spdlog::logger> spLogger_;
 	bool bShutDownPending_ = false;
 	long msgCount_ = 0;

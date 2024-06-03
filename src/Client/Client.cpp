@@ -6,33 +6,35 @@
 #include <sstream>   
 #include <chrono>
 #include <thread>
+#include <iostream>
 #include "Client.h"
-
-
-extern bool gl_getCancelStatus();
-extern long long getTicksSinceAppStart();
+#include "Utils/apptm.h"
 
 /**
 * Client class implementation
 */
 
-std::mt19937 Client::rnGen_(time(nullptr));
-std::uniform_int_distribution<unsigned short> Client::uid_(0,255);
-std::mutex Client::mtx_;
-
-
-void Client::run(Client* pClient, Channel* pChannel, size_t msgCount)
+void Client::run(std::shared_ptr<Client>& spClient, std::unique_ptr<Channel>& spChannel, size_t msgCount)
 {
     using namespace std::chrono_literals;
 
-    if ( (nullptr != pClient) &&
-            (nullptr != pChannel))
+    {
+      std::lock_guard<std::mutex> guard(mtx_);
+      std::cout << "Client " << spClient->id_ << " started ->" << std::endl;
+    }
+
+    if ( (nullptr != spClient) &&
+            (nullptr != spChannel))
     {
             while (!gl_getCancelStatus() &&
                           (msgCount-- != 0)) {
-                pClient->doAction(*pChannel);
-				std::this_thread::sleep_for(2ms);
+                spClient->doAction(*spChannel);
             }
+    }
+
+    {
+      std::lock_guard<std::mutex> guard(mtx_);
+      std::cout << "Client " << spClient->id_ << " finished <-" << std::endl;
     }
 }
 
@@ -48,7 +50,7 @@ Msg Client::generateMsg()
 
     tagTDATA* pData = new tagTDATA;
     pData->dwClientId = id_;
-    pData->dwTicks = static_cast<DWORD>(ticks);
+    pData->dwTicks = ticks;
 
 	// form some data:
     memset(pData->Data, 0, sizeof(pData->Data));
@@ -58,7 +60,7 @@ Msg Client::generateMsg()
 
     {
       std::lock_guard<std::mutex> guard(mtx_);
-      pData->cPriority = static_cast<unsigned short>(uid_(rnGen_));
+      pData->cPriority = uid_(rnGen_);
     }
 
     return (Msg(pData));

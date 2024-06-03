@@ -7,7 +7,7 @@
 #define PRIORITYQUEUE_CHANNEL_H
 
 #include <atomic>
-#include <msg.h>
+#include "Base/msg.h"
 
  /**
  * Channel interface declaration
@@ -22,15 +22,17 @@ struct MsgObserver
 
 struct Channel
 {
-    virtual void pushMsg(const Msg& msg) = 0;
+    virtual void pushMsg(const Msg& msg) = 0; 
+    virtual void pushMsg(Msg&& msg) = 0;
     virtual bool popMsg(MsgObserver* observ) = 0;
     virtual bool isEmpty() = 0;
+    virtual bool waitForMsg(const std::chrono::duration<double, std::milli>& timeout) = 0;
     virtual ~Channel() = default;
 };
 
 class ChannelFactory
 {
-    static std::atomic<Channel*> priorityQueueInstance_;
+    inline static std::atomic<Channel*> priorityQueueInstance_ = nullptr;
 
   public:
     static Channel* getPriorityQueueInstance();
