@@ -41,23 +41,13 @@ Supports Ctr+Break handling for aborting of its execution.*
 
 Project building is based on using CMake tool.
 
-To get a "Release" build, do the simple steps:
+To build the project use build.sh script with build type specification:
 
 ```
-    mkdir build
-    cd build
-    cmake -DCMAKE_BUILD_TYPE=Release ../.
-    cmake --build ./ --target all
-
+    ./build.sh release
+```
+or 
+```
+    ./build.sh debug
 ```
 
-
-Project has been build and tested on the next OS:
-
-- Windows 7 (64-bit):
-  - IDE - Visual Studio 2017 with supporting of CMake-based projects feature
-        (https://blogs.msdn.microsoft.com/vcblog/2016/11/16/cmake-support-in-visual-studio-the-visual-studio-2017-rc-update/)
-
-- Linux (Ubuntu 17.10, 64-bit):
-   - IDE - CLion (2017.3)
-     (gcc (Ubuntu 7.2.0-8ubuntu3) 7.2.0)
