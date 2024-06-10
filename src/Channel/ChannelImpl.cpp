@@ -50,7 +50,8 @@ void ChannelImpl::pushMsg(const Msg& msg)
 bool ChannelImpl::waitForMsg(const std::chrono::duration<double, std::milli>& timeout)
 {
     bool result(false);
-    cv_.wait_for(cv_mtx_, timeout, [this, &result](){ return (result = !queue_.empty());});
+    std::unique_lock lc(cv_mtx_);
+    cv_.wait_for(lc, timeout, [this, &result](){ return (result = !queue_.empty());});
     return result;
 }
 
