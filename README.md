@@ -13,7 +13,6 @@ Modelling of client/sever communications based on priority queue in a single app
 -m, --messages   a number of issued messages per a  a single client (optional, 1000 - by default)
 
 ```
-
 ### Samples of usage:
 
 ```
@@ -41,13 +40,14 @@ Supports Ctr+Break handling for aborting of its execution.*
 
 Project building is based on using CMake tool.
 
-To build the project use build.sh script with build type specification:
+To build the project under Linux OS use build.sh script with build type specification:
 
 ```
-    ./build.sh release
+    ./build.sh release (debug)
 ```
-or 
-```
-    ./build.sh debug
-```
+
+On Windows:
+  - Microsoft Visual Studio with supporting CMake-based projects feature and 
+    compiler enables C++ 17 standard (since VS 2019)
+
 

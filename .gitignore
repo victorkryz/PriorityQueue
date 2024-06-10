@@ -3,6 +3,7 @@
 /.vs
 /.vscode
 /build
+/out
 /build-debug
 /build-release
 /ToDoList.txt
