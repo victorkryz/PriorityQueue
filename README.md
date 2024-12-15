@@ -1,4 +1,10 @@
-# PriorityQueue
+
+# $\color{teal}\textit{\textbf{PriorityQueue}}$
+
+![C++](https://img.shields.io/badge/C++-17-blue?logo=C++)
+![cmake](https://img.shields.io/badge/cmake-3.7++-brightgreen)
+![gtest](https://img.shields.io/badge/GTest-1.14.0-blueviolet)
+
 
 Modelling of client/sever communications based on priority queue in a single application with command line interface.
 

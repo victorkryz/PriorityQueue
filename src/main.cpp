@@ -161,16 +161,17 @@ void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t 
 	clients.resize(c_clients);
 	clientThreads.reserve(c_clients);
 
-	for (int i = 0; i < c_clients; i++)
+	int id(0);
+	std::for_each(clients.begin(), clients.end(), 
+				  [&clientThreads, &spChannel, msgLimit, id](auto& spClient) mutable
 	{
-		std::shared_ptr<Client>& spClient = clients[i];
-		spClient.reset(new Client(i+1));
+		spClient.reset(new Client(++id));
 
 		std::thread th([&spClient, &spChannel, msgLimit]() {
 								Client::run(spClient, spChannel, msgLimit);}); 
 		
 		clientThreads.emplace_back(std::move(th));
-	}
+	});
 }
 
 
