@@ -2,8 +2,7 @@
  * PriorityQueue
  */
 
-#ifndef PRIORITYQUEUE_CHANNELIMPL_H
-#define PRIORITYQUEUE_CHANNELIMPL_H
+#pragma once
 
 #include <queue>
 #include <mutex>
@@ -38,5 +37,3 @@ class ChannelImpl : public Channel {
     std::priority_queue<Msg, std::vector<Msg>, std::function<bool (Msg&, Msg&)>> queue_;
 };
 
-
-#endif //PRIORITYQUEUE_CHANNELIMPL_H

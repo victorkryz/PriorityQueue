@@ -2,8 +2,7 @@
  * PriorityQueue
  */
 
-#ifndef PRIORITYQUEUE_BREACKINGHANDLER_H
-#define PRIORITYQUEUE_BREACKINGHANDLER_H
+#pragma once
 
 namespace Breaking
 {
@@ -22,4 +21,3 @@ namespace Breaking
 
 } //namespace Breaking
 
-#endif //PRIORITYQUEUE_BREACKINGHANDLER_H

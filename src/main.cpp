@@ -96,6 +96,8 @@ bool processArguments(int argc, char* argv[], size_t& c_clients, size_t& c_msgs)
 {
 	// there's used third-party "Lightweight C++ command line option parser"  (https://github.com/jarro2783/cxxopts)
 
+	constexpr size_t MAX_CLIENTS = 50;
+
 	bool bResult(false);
 
 	try
@@ -105,14 +107,14 @@ bool processArguments(int argc, char* argv[], size_t& c_clients, size_t& c_msgs)
 			.show_positional_help();
 
 		options.add_options()
-			("c, clients", "clients number (not above than 10)", cxxopts::value<size_t>(c_clients))
+			("c, clients", "clients number (not above than 50)", cxxopts::value<size_t>(c_clients))
 			("m, messages", "a number of issued messages per client (optional, 1000 by default)", cxxopts::value<size_t>(c_msgs));
 
 		auto args = options.parse(argc, argv);
 
 		if (0 != args.count("clients"))
 		{
-			if (10 >= c_clients)
+			if (MAX_CLIENTS >= c_clients)
 				bResult = true;
 			else
 			{

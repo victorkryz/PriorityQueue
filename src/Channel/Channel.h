@@ -2,11 +2,10 @@
  * PriorityQueue
  */
 
-
-#ifndef PRIORITYQUEUE_CHANNEL_H
-#define PRIORITYQUEUE_CHANNEL_H
+#pragma once
 
 #include <atomic>
+#include <mutex>
 #include "Base/msg.h"
 
  /**
@@ -32,10 +31,11 @@ struct Channel
 
 class ChannelFactory
 {
-    inline static std::atomic<Channel*> priorityQueueInstance_ = nullptr;
+    inline static Channel* priorityQueueInstance_ = nullptr;
+    inline static std::mutex mtx_;
 
   public:
     static Channel* getPriorityQueueInstance();
+    
 };
 
-#endif //PRIORITYQUEUE_CHANNEL_H

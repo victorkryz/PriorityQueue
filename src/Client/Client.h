@@ -2,8 +2,7 @@
  * PriorityQueue
  */
 
-#ifndef PRIORITYQUEUE_CLIENT_H
-#define PRIORITYQUEUE_CLIENT_H
+#pragma once
 
 #include <random>
 #include <mutex>
@@ -48,5 +47,3 @@ class Client {
 inline std::uniform_int_distribution<unsigned short> Client::uid_(0,255);
 inline std::mutex Client::mtx_;
 inline std::mt19937 Client::rnGen_(time(nullptr));
-
-#endif //PRIORITYQUEUE_CLIENT_H
