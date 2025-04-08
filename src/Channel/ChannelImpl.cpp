@@ -2,6 +2,7 @@
  * PriorityQueue
  */
 
+#include "Channel.h"
 #include "ChannelImpl.h"
 
  /**
@@ -10,7 +11,9 @@
 
 Channel* ChannelFactory::getPriorityQueueInstance()
 {
-    if ( nullptr == priorityQueueInstance_)
+    std::lock_guard lg(mtx_);
+
+    if ( !priorityQueueInstance_)
         priorityQueueInstance_ = new ChannelImpl();
 
     return priorityQueueInstance_;

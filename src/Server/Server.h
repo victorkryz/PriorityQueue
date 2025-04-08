@@ -2,8 +2,7 @@
  * PriorityQueue
  */
 
-#ifndef PRIORITYQUEUE_SERVER_H
-#define PRIORITYQUEUE_SERVER_H
+#pragma once
 
 #include <Channel/Channel.h>
 #include <memory>
@@ -65,6 +64,3 @@ class Server : public MsgObserver
 	long msgCount_ = 0;
 	std::string strLogFileName_;
 };
-
-
-#endif //PRIORITYQUEUE_SERVER_H
