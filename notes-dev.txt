@@ -1,0 +1,6 @@
+// to specify compiler set CMAKE_CXX_COMPILER variable
+cmake -Wno-dev -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++-11 ..
+
+
+// use valgrind to check leaks:
+valgrind -s --leak-check=yes ./PriorityQueue -c 50 -m 100000
