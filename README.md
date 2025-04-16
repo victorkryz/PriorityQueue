@@ -1,7 +1,7 @@
 # $\color{teal}\textit{\textbf{PriorityQueue}}$
 
 ![C++](https://img.shields.io/badge/C++-17-purple?logo=C++)
-![cmake](https://img.shields.io/badge/cmake-3.30-olive)
+![cmake](https://img.shields.io/badge/cmake-3.30-brightgreen)
 ![gtest](https://img.shields.io/badge/GTest-1.14.0-blueviolet)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-18.04+-red?logo=Ubuntu)
 ![Windows](https://img.shields.io/badge/Windows-11-blue?logo=Windows)
