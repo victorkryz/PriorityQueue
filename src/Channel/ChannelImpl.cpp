@@ -39,7 +39,7 @@ bool ChannelImpl::popMsg(MsgObserver* observ)
 void ChannelImpl::pushMsg(Msg&& msg)
 {
     std::lock_guard<std::mutex> guard(mtx_);
-    queue_.emplace(msg);
+    queue_.emplace(std::move(msg));
     cv_.notify_all();
 }
 
