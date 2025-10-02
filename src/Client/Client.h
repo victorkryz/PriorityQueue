@@ -46,4 +46,4 @@ class Client {
 
 inline std::uniform_int_distribution<unsigned short> Client::uid_(0,255);
 inline std::mutex Client::mtx_;
-inline std::mt19937 Client::rnGen_(time(nullptr));
+inline std::mt19937 Client::rnGen_(static_cast<unsigned int>(time(nullptr)));
