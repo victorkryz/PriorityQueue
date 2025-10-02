@@ -1,0 +1,35 @@
+
+name: Linux, build and test
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: "Build configuration"
+        required: true
+        default: "Release"
+
+env:
+  BUILD_TYPE: Release
+  BUILD_DIRECTORY: build
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure CMake
+      run: cmake -S. -B ${{github.workspace}}/${{env.BUILD_DIRECTORY}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/${{env.BUILD_DIRECTORY}} --config ${{env.BUILD_TYPE}}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/${{env.BUILD_DIRECTORY}}/src/g.tests
+      run: ctest -V
+
+    - name: Run PriorityQueue
+      working-directory: ${{github.workspace}}/${{env.BUILD_DIRECTORY}}
+      run: ./PriorityQueue -c 15 -m 2000
