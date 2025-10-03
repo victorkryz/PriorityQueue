@@ -22,8 +22,9 @@ Channel* ChannelFactory::getPriorityQueueInstance()
 bool ChannelImpl::popMsg(MsgObserver* observ)
 {
     std::lock_guard<std::mutex> guard(mtx_);
-    const bool bHasMsg(!queue_.empty());
-    if ( bHasMsg )
+
+    bool bHasMsg(!queue_.empty());
+    while ( bHasMsg )
     {
         const Msg &msg = queue_.top();
 
@@ -31,6 +32,8 @@ bool ChannelImpl::popMsg(MsgObserver* observ)
             observ->onMsg(msg);
 
         queue_.pop();
+        
+        bHasMsg = !queue_.empty();
     }
 
     return bHasMsg;
