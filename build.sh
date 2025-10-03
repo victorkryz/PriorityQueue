@@ -13,7 +13,8 @@ fi
 
 mkdir -p ${BUILD_DIR}
 pushd ${BUILD_DIR}
-cmake -Wno-dev -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ..
+# cmake -Wno-dev -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ..
+cmake -Wno-dev -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++-11 ..
 make -j4
 cd src/g.tests/
 ctest
