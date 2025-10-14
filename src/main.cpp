@@ -9,6 +9,7 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
+#include <memory>
 #include "Channel/Channel.h"
 #include "Server/Server.h"
 #include "Client/Client.h"
@@ -166,12 +167,12 @@ void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t 
 	for (int i = 0; i < c_clients; i++)
 	{
 		std::shared_ptr<Client>& spClient = clients[i];
-		spClient.reset(new Client(i+1));
+		spClient = std::make_shared<Client>(i+1);
 
 		std::thread th([&spClient, &spChannel, msgLimit]() {
 								Client::run(spClient, spChannel, msgLimit);}); 
 		
-		clientThreads.emplace_back(std::move(th));
+		clientThreads.push_back(std::move(th));
 	}
 }
 
