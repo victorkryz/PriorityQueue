@@ -1,7 +1,5 @@
 /**
  * PriorityQueue
- *
- * @author Viktor Kryzhanivskyi
  */
 
 #include <iostream>
@@ -9,13 +7,11 @@
 #include <thread>
 #include <chrono>
 #include <vector>
-#include <algorithm>
 #include <memory>
 #include "Channel/Channel.h"
 #include "Server/Server.h"
 #include "Client/Client.h"
 #include "Utils/BreackingHandler.h"
-#include "Utils/apptm.h"
 #include "Utils/cxxopts.hpp"
 
 
