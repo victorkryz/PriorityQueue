@@ -5,6 +5,7 @@
  */
 
 #include <iostream>
+#include <iomanip>
 #include <thread>
 #include <chrono>
 #include <vector>
@@ -16,6 +17,7 @@
 #include "Utils/BreackingHandler.h"
 #include "Utils/apptm.h"
 #include "Utils/cxxopts.hpp"
+
 
 
 // default limit of issued messages per client
@@ -33,7 +35,7 @@ void startClients(std::unique_ptr<Channel>& spChannel, size_t c_clients, size_t 
 *
 * command line parameters:
 *	-c, --clients    clients number(not above than 10)
-*	- m, --messages   a number of issued messages per a single client(optional, 1000 - by default)
+*	-m, --messages   a number of issued messages per a single client(optional, 1000 - by default)
 */
 int main(int argc, char* argv[])
 {
@@ -58,6 +60,8 @@ int main(int argc, char* argv[])
     std::thread srvTh = startServer(pServer, spChannel);
 
 	// start clients:
+	std::chrono::time_point msg_transf_start_time = std::chrono::steady_clock::now();
+
     std::vector<std::thread> clientThreads;
     std::vector<std::shared_ptr<Client>> clients;
 	startClients(spChannel, arg_c_clients, arg_c_msgs, clients, clientThreads);
@@ -67,6 +71,9 @@ int main(int argc, char* argv[])
          th.join();
 
     // all clients have gone ...
+	std::chrono::time_point msg_transf_finish_time = std::chrono::steady_clock::now();
+	std::chrono::duration<float> msg_transf_duration = std::chrono::duration_cast<std::chrono::milliseconds>(msg_transf_finish_time - msg_transf_start_time);
+
     // notify server it's time to shutdown
     pServer->scheduleShutDown();
 
@@ -84,7 +91,8 @@ int main(int argc, char* argv[])
 		exitCode = 1;
 	}
 
-    std::cout << strDone << "! (" << pServer->getReceivedMsgCount()  << " messages were received)" << std::endl;
+    std::cout << strDone << "! (" << pServer->getReceivedMsgCount()  << " messages were received for " 
+								   << std::setprecision(2) << msg_transf_duration.count() << " s)" << std::endl;
     std::cout << "See log file: \"" << pServer->getLogFileName() << "\"" << std::endl;
 
     Server::releaseInstance();
