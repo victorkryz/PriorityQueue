@@ -23,8 +23,9 @@ bool ChannelImpl::popMsg(MsgObserver* observ)
 {
     std::lock_guard<std::mutex> guard(mtx_);
 
-    bool bHasMsg(!queue_.empty());
-    while ( bHasMsg )
+    bool hadMessages = !queue_.empty();
+
+    while ( !queue_.empty() )
     {
         const Msg &msg = queue_.top();
 
@@ -32,11 +33,9 @@ bool ChannelImpl::popMsg(MsgObserver* observ)
             observ->onMsg(msg);
 
         queue_.pop();
-        
-        bHasMsg = !queue_.empty();
     }
 
-    return bHasMsg;
+    return hadMessages;
 }
 
 void ChannelImpl::pushMsg(Msg&& msg)

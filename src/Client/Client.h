@@ -4,10 +4,9 @@
 
 #pragma once
 
+#include <memory>
 #include <random>
 #include <mutex>
-#include <shared_mutex>
-#include <chrono>
 #include "Base/msg.h"
 #include "Channel/Channel.h"
 
@@ -34,7 +33,7 @@ class Client {
      void doAction(Channel& channel);
 
    private:
-    Msg generateMsg();
+    void generateMsg(Msg& msg);
 
    private:
     uint64_t id_ = 0;
