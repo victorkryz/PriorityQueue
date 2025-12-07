@@ -58,8 +58,7 @@ MATCHER_P(CheckMsg, ref_msg, "") {
 
 TEST_F(ServerTS, MsgFlowTest)
 {
-    TDATA* pkg = new TDATA{5, getTicksSinceAppStart(), 2277};
-    Msg msg(pkg);
+    Msg msg(TDATA{5, getTicksSinceAppStart(), 2277});
 
     ON_CALL(*server_, onMsg)
             .WillByDefault([this](const Msg& msg) {

@@ -4,8 +4,6 @@
 
 #include <cstring>
 #include <sstream>   
-#include <chrono>
-#include <thread>
 #include <iostream>
 #include "Client.h"
 #include "Utils/apptm.h"
@@ -40,28 +38,27 @@ void Client::run(std::shared_ptr<Client>& spClient, std::unique_ptr<Channel>& sp
 
 void Client::doAction(Channel& channel)
 {
-    Msg msg = generateMsg();
+    Msg msg;
+    generateMsg(msg);
     channel.pushMsg(std::move(msg));
 }
 
-Msg Client::generateMsg()
+void Client::generateMsg(Msg& msg)
 {
     const auto ticks = getTicksSinceAppStart();
 
-    tagTDATA* pData = new tagTDATA;
-    pData->dwClientId = id_;
-    pData->dwTicks = ticks;
+    TDATA& data = msg.getContent();
+    
+    data.dwClientId = id_;
+    data.dwTicks = ticks;
 
-	// form some data:
-    memset(pData->Data, 0, sizeof(pData->Data));
+	  // generate message text:
     std::stringstream strstr;
     strstr << "Message from client "  <<  id_ << ".";
-    std::strcpy(pData->Data, strstr.str().c_str());
+    std::strcpy(data.Data, strstr.str().c_str());
 
     {
       std::lock_guard<std::mutex> guard(mtx_);
-      pData->cPriority = uid_(rnGen_);
+      data.cPriority = uid_(rnGen_);
     }
-
-    return (Msg(pData));
 }
