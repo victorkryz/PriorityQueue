@@ -21,7 +21,13 @@ class ChannelImpl : public Channel {
                             { return left.getContent().cPriority >
                                       right.getContent().cPriority; }) {
      }
-     ~ChannelImpl() override = default;
+     ~ChannelImpl() override = default; // ensures the base destructor is virtual
+
+     // non-copyable/moveable 
+     ChannelImpl(const ChannelImpl&) = delete;
+     ChannelImpl& operator=(const ChannelImpl&) = delete;
+     ChannelImpl(ChannelImpl&&) = delete;
+     ChannelImpl& operator=(ChannelImpl&&) = delete;
 
      void pushMsg(const Msg& msg) override;
      void pushMsg(Msg&& msg) override;
