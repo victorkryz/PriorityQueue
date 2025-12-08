@@ -35,7 +35,8 @@ class ChannelFactory
     inline static std::mutex mtx_;
 
   public:
+    ~ChannelFactory() = delete;  
+
     static Channel* getPriorityQueueInstance();
-    
 };
 

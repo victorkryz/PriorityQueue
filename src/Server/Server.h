@@ -25,6 +25,12 @@ class Server : public MsgObserver
     static Server* srvInst_;
 	static std::mutex mtx_;
 
+	// non-copyable/moveable 
+	Server(const Server&) = delete;
+	Server& operator=(const Server&) = delete;
+	Server(Server&&) = delete;
+	Server& operator=(Server&&) = delete;
+
   public:
     static Server* getInstance();
 	static void releaseInstance();
