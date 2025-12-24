@@ -37,10 +37,10 @@ PriorityQueue -c 8 -m 500
 Supports Ctr+Break handling for aborting of its execution.*
 
 
-### Used third-party code:
+### Third-Party Libraries:
 
- - "Lightweight C++ command line option parser (https://github.com/jarro2783/cxxopts)
-- "spdlog" for logging (see: https://github.com/gabime/spdlog)
+  - "Lightweight C++ command line option parser (https://github.com/jarro2783/cxxopts)
+  - "spdlog" for logging (see: https://github.com/gabime/spdlog)
 
 
 ### Building:
