@@ -120,8 +120,9 @@ void Server::onMsg(const Msg& msg)
     logMsg(msg);
 }
 
-void Server::onIdle()
+void Server::onIdle() 
 {
+    std::this_thread::yield();
 }
 
 void Server::logMsg(const Msg& msg)
